@@ -1,10 +1,10 @@
-# Desafio de processamento de dados - CAGED e RAIS
+# Desafio de processamento de dados - CAGED e RAIS (Relação Anual de Informações Sociais)
 
 ## Proposito:
 Este projeto tem como intuíto utilizar a base de dados sobre Demissões no Brasil como base para aprendizado em diferentes ferramentas e arquiteturas de processamento de dados.
 
 
-A base de dados está disponível via um serviço FTP,  ftp://ftp.mtps.gov.br/pdet/microdados/, disponibilizada pelo Ministerio do Trabalho, no [programa PDET (Programa de Disseminação das Estatisticas de Trabalho)](http://pdet.mte.gov.br/o-programa).
+A base de dados está disponível via um serviço FTP, ftp://ftp.mtps.gov.br/pdet/microdados/, disponibilizada pelo Ministerio do Trabalho, no [programa PDET (Programa de Disseminação das Estatisticas de Trabalho)](http://pdet.mte.gov.br/o-programa).
 
 
 ## Metodologia:
@@ -46,5 +46,3 @@ Estas perguntas devem ajudar a guiar o desenvolvimento de visualizações ou rep
    * Quais são as áreas com maior salário por estado?
  
 * Qual a média de horas trabalhadas por tipo de carreira?
-
-
