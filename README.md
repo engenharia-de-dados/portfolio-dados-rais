@@ -46,5 +46,3 @@ Estas perguntas devem ajudar a guiar o desenvolvimento de visualizações ou rep
    * Quais são as áreas com maior salário por estado?
  
 * Qual a média de horas trabalhadas por tipo de carreira?
-
-
