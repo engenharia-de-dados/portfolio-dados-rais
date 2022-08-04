@@ -9,3 +9,4 @@ private_subnet_cidrs = [
   "10.192.21.0/24"
 ]
 mwaa_max_workers = 2
+dl_s3_bucket_name = "vplentz-dl-prod"

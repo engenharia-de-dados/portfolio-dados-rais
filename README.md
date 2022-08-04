@@ -46,3 +46,15 @@ Estas perguntas devem ajudar a guiar o desenvolvimento de visualizações ou rep
    * Quais são as áreas com maior salário por estado?
  
 * Qual a média de horas trabalhadas por tipo de carreira?
+
+## Ambiente de desenvolvimento:
+
+O ambiente de desenvolvimento foi baseado no repositório da [AWS MWAA Local Runner](https://github.com/aws/aws-mwaa-local-runner), o mesmo foi atualizado para a versão 2.2.2 do Airflow. 
+
+Para rodar o ambiente, você precisará do Docker. 
+
+Instruções:
+* Build: `./mwaa-local-env build-image`
+* Start: `./mwaa-local-env start`
+
+Troubleshoot e customizações: Verifique o repositório original da AWS.
