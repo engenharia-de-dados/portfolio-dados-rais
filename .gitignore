@@ -6,3 +6,4 @@ dags/**/*.pyc
 /db-data
 *.tfstate
 *.tfstate.backup
+.terraform
