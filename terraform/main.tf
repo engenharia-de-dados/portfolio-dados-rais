@@ -33,12 +33,28 @@ variable "private_subnet_cidrs" {
   type = list(string)
 }
 
+variable "dl_s3_bucket_name" {
+  type = string
+}
+
+module "dl_s3" {
+  source            = "./dl_s3"
+  dl_s3_bucket_name = var.dl_s3_bucket_name
+}
+
 module "mwaa_network" {
   source               = "./network"
   prefix               = var.prefix
   vpc_cidr             = var.vpc_cidr
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
+}
+
+module "secret_manager" {
+  source = "./secret_manager"
+  dl_s3_bucket_arn = module.dl_s3.aws_s3_data_bucket
+  dl_s3_iam_user_id = module.dl_s3.aws_dl_s3_user_id
+  dl_s3_iam_user_secret = module.dl_s3.aws_dl_s3_user_secret
 }
 
 resource "aws_s3_bucket" "dags_bucket" {
@@ -51,6 +67,13 @@ resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_object" "upload_dags" {
+  for_each = fileset("../dags/", "*.py")
+  bucket   = aws_s3_bucket.dags_bucket.id
+  key      = "dags/${each.value}"
+  source   = "../dags/${each.value}"
 }
 
 resource "aws_iam_role" "iam_role" {
@@ -86,9 +109,9 @@ data "aws_iam_policy_document" "iam_policy_document" {
   }
 
   statement {
-    sid     = ""
-    actions = ["s3:ListAllMyBuckets"]
-    effect  = "Allow"
+    sid       = ""
+    actions   = ["s3:ListAllMyBuckets"]
+    effect    = "Allow"
     resources = ["*"]
   }
 
@@ -99,7 +122,7 @@ data "aws_iam_policy_document" "iam_policy_document" {
       "s3:GetBucket*",
       "s3:List*"
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
   }
 
@@ -132,7 +155,18 @@ data "aws_iam_policy_document" "iam_policy_document" {
     effect    = "Allow"
     resources = ["*"]
   }
-
+  statement {
+    sid = ""
+    actions = [
+      "secretsmanager:GetResourcePolicy",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecretVersionIds",
+      "secretsmanager:ListSecrets"
+    ]
+    effect    = "Allow"
+    resources = ["*"]
+  }
   statement {
     sid = ""
     actions = [
@@ -194,7 +228,11 @@ resource "aws_mwaa_environment" "airflow" {
   network_configuration {
     security_group_ids = [module.mwaa_network.aws_sg_id]
     subnet_ids         = module.mwaa_network.private_subnets_ids
-    }
+  }
+  airflow_configuration_options = {
+    "secrets.backend" = "airflow.providers.amazon.aws.secrets.secrets_manager.SecretsManagerBackend",
+    "secrets.backend_kwargs" = jsonencode({"connections_prefix" : "AIRFLOW_CONN", "variables_prefix" : "AIRFLOW_VAR", "sep" : "_"})
+  }
 }
 
 output "AirflowIP" {

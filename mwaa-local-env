@@ -75,7 +75,7 @@ reset-db)
    docker-compose -p $DOCKER_COMPOSE_PROJECT_NAME -f ./docker/docker-compose-resetdb.yml up --abort-on-container-exit
    ;;
 start)
-   terraform apply -auto-approve ${PWD}/terraform/dl_s3 
+   # terraform apply -auto-approve ${PWD}/terraform/dl_s3 
    docker-compose -p $DOCKER_COMPOSE_PROJECT_NAME -f ./docker/docker-compose-local.yml up
    ;;
 destroy)
